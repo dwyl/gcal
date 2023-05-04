@@ -7,7 +7,16 @@ defmodule Gcal.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      aliases: aliases(),
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        c: :test,
+        coveralls: :test,
+        "coveralls.json": :test,
+        "coveralls.html": :test,
+        t: :test
+      ]
     ]
   end
 
@@ -21,8 +30,18 @@ defmodule Gcal.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+
+      # create docs on localhost by running "mix docs"
+      {:ex_doc, "~> 0.29", only: :dev, runtime: false},
+      # Track test coverage: github.com/parroty/excoveralls
+      {:excoveralls, "~> 0.15", only: [:test, :dev]},
+    ]
+  end
+
+  defp aliases do
+    [
+      t: ["test"],
+      c: ["coveralls.html"]
     ]
   end
 end
