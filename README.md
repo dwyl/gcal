@@ -2,14 +2,22 @@
 
 # 📅 `gcal`
 
-Manage `Google Calendar` events from your `Elixir` / `Phoenix` App.
+Easily view and manage `Google Calendar` events 
+from your `Elixir` / `Phoenix` App.
+
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/dwyl/gcal/ci.yml?label=build&style=flat-square&branch=main)
+[![codecov.io](https://img.shields.io/codecov/c/github/dwyl/gcal/main.svg?style=flat-square)](http://codecov.io/github/dwyl/gcal?branch=main)
+[![Hex.pm](https://img.shields.io/hexpm/v/gcal?color=brightgreen&style=flat-square)](https://hex.pm/packages/gcal)
+[![contributions welcome](https://img.shields.io/badge/feedback-welcome-brightgreen.svg?style=flat-square)](https://github.com/dwyl/gcal/issues)
+[![HitCount](https://hits.dwyl.com/dwyl/gcal.svg)](https://hits.dwyl.com/dwyl/gcal)
+
 
 </div>
 
 # Why? 🤷‍♀️
 
 After building our 
-[`calendar`](https://github.com/dwyl/calendar) 
+[`calendar`](https://github.com/dwyl/gcal) 
 prototype
 that allowed us to visualize 
 our `Google Calendar` events
@@ -25,11 +33,14 @@ that _anyone_ can use.
 A _tiny_ well-documented, tested & maintained `Elixir` library 
 for interacting with `Google Calendar`.
 
+See it in action:
+[github.com/dwyl/**calendar**](https://github.com/dwyl/calendar)
+
 # Who?
 
 `gcal` is _by_ us _for_ us (`@dwyl`).
 We are _using_ it in our 
-[`calendar`](https://github.com/dwyl/calendar) 
+[`calendar`](https://github.com/dwyl/gcal) 
 and 
 [`MVP`](https://github.com/dwyl/mvp).
 Anyone `else` that needs to interact with `Google Calendar`
@@ -63,8 +74,23 @@ end
 
 ## Usage
 
-coming soon!
+### Google Authentication Session `token`
 
-Documentation available at: 
+This package expects a valid **`Google` session `token`** 
+as the **_first_ argument** for all functions.
+The easiest way to get a **`token`**
+is to use 
+[`elixir-auth-google`](https://github.com/dwyl/elixir-auth-google)
+to allow `people` using your app
+to easily authenticate with their `Google` Account. 
+
+### Functions
+
+
+
+
+# Docs
+
+Comprehensive documentation is available at: 
 [hexdocs.pm/**gcal**](https://hexdocs.pm/gcal)
 
