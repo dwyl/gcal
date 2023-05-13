@@ -145,7 +145,6 @@ defmodule Gcal do
       {:error, :no_body}
     else
       {:ok, str_key_map} = Jason.decode(body)
-      dbg(str_key_map)
       # https://stackoverflow.com/questions/31990134
       {:ok, Useful.atomize_map_keys(str_key_map)}
     end

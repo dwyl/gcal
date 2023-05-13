@@ -6,7 +6,6 @@ defmodule GcalTest do
     token = System.get_env("TOKEN")
     {:ok, cals} = Gcal.get_calendar_list(token)
     cal = List.first(cals.items)
-    dbg(cals)
     assert cal.id == "nelson@gmail.com-TEST"
   end
 
