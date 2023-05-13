@@ -24,8 +24,8 @@ defmodule Gcal.HTTPoisonMock do
 
   @doc """
   `get/1` retrieves the calendar.
-  Returns a calendar object with random data.
-  See https://developers.google.com/calendar/api/v3/reference/calendars
+  Returns a calendar object with valid data.
+  https://developers.google.com/calendar/api/v3/reference/calendars
   Obviously, don't invoke it from your App unless you want people to see fails.
   """
   def get("https://www.googleapis.com/calendar/v3/calendars/primary", _headers) do
@@ -39,6 +39,74 @@ defmodule Gcal.HTTPoisonMock do
     })
     {:ok, %{body: body}}
   end
+
+  # https://developers.google.com/calendar/api/v3/reference/calendarList/list
+
+  def get("https://www.googleapis.com/calendar/v3/users/me/calendarList", _headers) do
+    body = Jason.encode!( %{
+      etag: "\"p320ebocgmjpfs0g\"",
+      items: [
+        %{
+          accessRole: "owner",
+          backgroundColor: "#9fe1e7",
+          colorId: "14",
+          conferenceProperties: %{allowedConferenceSolutionTypes: ["hangoutsMeet"]},
+          defaultReminders: [%{method: "popup", minutes: 10}],
+          etag: "\"1553070512390000\"",
+          foregroundColor: "#000000",
+          id: "nelson@gmail.com-TEST",
+          kind: "calendar#calendarListEntry",
+          notificationSettings: %{
+            notifications: [
+              %{method: "email", type: "eventCreation"},
+              %{method: "email", type: "eventChange"},
+              %{method: "email", type: "eventCancellation"},
+              %{method: "email", type: "eventResponse"}
+            ]
+          },
+          primary: true,
+          selected: true,
+          summary: "nelson@mail.com",
+          timeZone: "Europe/London"
+        },
+        %{
+          accessRole: "owner",
+          backgroundColor: "#d06b64",
+          colorId: "2",
+          conferenceProperties: %{allowedConferenceSolutionTypes: ["hangoutsMeet"]},
+          defaultReminders: [],
+          etag: "\"1553070512692000\"",
+          foregroundColor: "#000000",
+          id: "dwyl.io_rpia5b9frqmvvd549c1scs82mk@group.calendar.google.com",
+          kind: "calendar#calendarListEntry",
+          location: "London, UK",
+          selected: true,
+          summary: "dwyl",
+          timeZone: "Europe/London"
+        },
+        %{
+          accessRole: "reader",
+          backgroundColor: "#16a765",
+          colorId: "8",
+          conferenceProperties: %{allowedConferenceSolutionTypes: ["hangoutsMeet"]},
+          defaultReminders: [],
+          description: "Holidays and Observances in United Kingdom",
+          etag: "\"1558367364937000\"",
+          foregroundColor: "#000000",
+          id: "en.uk#holiday@group.v.calendar.google.com",
+          kind: "calendar#calendarListEntry",
+          selected: true,
+          summary: "Holidays in United Kingdom",
+          summaryOverride: "Holidays in United Kingdom",
+          timeZone: "Europe/London"
+        }
+      ],
+      kind: "calendar#calendarList",
+      nextSyncToken: "CIDl4ZC08v4CEg9uZWxzb25AZHd5bC5jb20="
+    })
+    {:ok, %{body: body}}
+  end
+
 
   @doc """
   `get/1` catch-all get function returns mock event list.

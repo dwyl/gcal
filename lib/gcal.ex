@@ -5,7 +5,7 @@ defmodule Gcal do
   `Gcal` helps you interact with your `Google` Calendar via the API.
   """
 
-  @baseurl "https://www.googleapis.com/calendar/v3/calendars/"
+  @baseurl "https://www.googleapis.com/calendar/v3"
 
   @doc """
   `headers/1` returns the required headers for making an HTTP request.
@@ -21,9 +21,75 @@ defmodule Gcal do
   end
 
   @doc """
+  `get_calendar_list/1` gets the list of available calendars for the person.
+  https://developers.google.com/calendar/api/v3/reference/calendarList/list
+
+  Arguments:
+
+  `access_token`: the valid `Google` Auth access token.
+
+  Sample response:
+
+  {:ok, %{
+    etag: "\"p320ebocgmjpfs0g\"",
+    items: [
+      %{
+        "accessRole" => "owner",
+        "backgroundColor" => "#9fe1e7",
+        "colorId" => "14",
+        "conferenceProperties" => %{
+          "allowedConferenceSolutionTypes" => ["hangoutsMeet"]
+        },
+        "defaultReminders" => [%{"method" => "popup", "minutes" => 10}],
+        "etag" => "\"1553070512390000\"",
+        "foregroundColor" => "#000000",
+        "id" => "nelson@gmail.com",
+        "kind" => "calendar#calendarListEntry",
+        "notificationSettings" => %{
+          "notifications" => [
+            %{"method" => "email", "type" => "eventCreation"},
+            %{"method" => "email", "type" => "eventChange"},
+            %{"method" => "email", "type" => "eventCancellation"},
+            %{"method" => "email", "type" => "eventResponse"}
+          ]
+        },
+        "primary" => true,
+        "selected" => true,
+        "summary" => "nelson@gmail.com",
+        "timeZone" => "Europe/London"
+      },
+      %{
+        "accessRole" => "owner",
+        "backgroundColor" => "#d06b64",
+        "colorId" => "2",
+        "conferenceProperties" => %{
+          "allowedConferenceSolutionTypes" => ["hangoutsMeet"]
+        },
+        "defaultReminders" => [],
+        "etag" => "\"1553070512692000\"",
+        "foregroundColor" => "#000000",
+        "id" => "rpia5b9frqmvvd549c1scs82mk@group.calendar.google.com",
+        "kind" => "calendar#calendarListEntry",
+        "location" => "London, UK",
+        "selected" => true,
+        "summary" => "dwyl",
+        "timeZone" => "Europe/London"
+      }
+    ],
+    kind: "calendar#calendarList",
+    nextSyncToken: "CIDl4ZC08v4CEg9uZWxzb25AZHd5bC5jb20="
+  }}
+  """
+  def get_calendar_list(access_token) do
+    httpoison().get("#{@baseurl}/users/me/calendarList", headers(access_token))
+    |> parse_body_response()
+  end
+
+  @doc """
   `get_calendar_details/2` gets the details of the desired calendar.
 
   Arguments:
+
   `access_token`: the valid `Google` Auth access token
   `datetime`: the date and time of the day to fetch the events.
   `calendar`: (optional) the string name of the calendar; defaults to "primary"
@@ -41,7 +107,7 @@ defmodule Gcal do
 
   """
   def get_calendar_details(access_token, cal_name \\ "primary") do
-    httpoison().get("#{@baseurl}#{cal_name}", headers(access_token))
+    httpoison().get("#{@baseurl}/calendars/#{cal_name}", headers(access_token))
     |> parse_body_response()
   end
 
@@ -65,7 +131,7 @@ defmodule Gcal do
     }
 
     {:ok, event_list} =
-      httpoison().get("#{@baseurl}#{primary_cal.id}/events", headers(access_token), params: params)
+      httpoison().get("#{@baseurl}/calendars/#{primary_cal.id}/events", headers(access_token), params: params)
       |> parse_body_response()
 
     {primary_cal, event_list}
@@ -79,9 +145,9 @@ defmodule Gcal do
       {:error, :no_body}
     else
       {:ok, str_key_map} = Jason.decode(body)
+      dbg(str_key_map)
       # https://stackoverflow.com/questions/31990134
-      atom_key_map = for {key, val} <- str_key_map, into: %{}, do: {String.to_atom(key), val}
-      {:ok, atom_key_map}
+      {:ok, Useful.atomize_map_keys(str_key_map)}
     end
   end
 end

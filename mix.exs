@@ -43,17 +43,25 @@ defmodule Gcal.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # HTTP request lib
+      # HTTP request lib: github.com/edgurgel/httpoison
       {:httpoison, "~> 2.0"},
 
-      # Datetime transformation
+      # Datetime transformation: github.com/bitwalker/timex
       {:timex, "~> 3.0"},
+
+      # Useful functions: github.com/dwyl/useful
+      {:useful, "~> 1.11.1"},
+      # Atomize map keys:
+      {:atomic_map, "~> 0.8"},
 
       # Create docs on localhost by running "mix docs"
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
 
       # Track test coverage: github.com/parroty/excoveralls
-      {:excoveralls, "~> 0.15", only: [:test, :dev]}
+      {:excoveralls, "~> 0.15", only: [:test, :dev]},
+
+      # Environment Variables for testing
+      {:envar, "~> 1.1.0", only: :dev, runtime: false}
     ]
   end
 

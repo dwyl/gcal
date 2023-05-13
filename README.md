@@ -74,11 +74,11 @@ end
 
 ## Usage
 
-### Google Authentication Session `token`
+### Google Auth Session `access_token`
 
-This package expects a valid **`Google` session `token`** 
+This package expects a valid **`Google` session `access_token`** 
 as the **_first_ argument** for all functions.
-The easiest way to get a **`token`**
+The easiest way to get a **`access_token`**
 is to use 
 [`elixir-auth-google`](https://github.com/dwyl/elixir-auth-google)
 to allow `people` using your app
