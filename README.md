@@ -2,7 +2,7 @@
 
 # 📅 `gcal`
 
-Easily view and manage `Google Calendar` events 
+Easily view and manage **`Google Calendar` `events`**
 from your `Elixir` / `Phoenix` App.
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/dwyl/gcal/ci.yml?label=build&style=flat-square&branch=main)
@@ -25,7 +25,7 @@ in a more friendly interface,
 we realized that much of the `code`
 could be reused.
 So we decided to split the code
-out into an independently tested package
+out into an independently tested, documented and maintained package
 that _anyone_ can use. 
 
 # What? 🗓️
@@ -67,7 +67,7 @@ Add `gcal` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:gcal, "~> 1.0.0"}
+    {:gcal, "~> 1.0.1"}
   ]
 end
 ```

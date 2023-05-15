@@ -18,7 +18,7 @@ defmodule Gcal.MixProject do
       ],
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      version: "1.0.0"
+      version: "1.0.1"
     ]
   end
 
@@ -51,8 +51,6 @@ defmodule Gcal.MixProject do
 
       # Useful functions: github.com/dwyl/useful
       {:useful, "~> 1.11.1"},
-      # Atomize map keys:
-      {:atomic_map, "~> 0.8"},
 
       # Create docs on localhost by running "mix docs"
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
@@ -67,9 +65,9 @@ defmodule Gcal.MixProject do
 
   defp package() do
     [
-      files: ["lib/gcal.ex", "mix.exs", "README.md"],
+      files: ["lib/gcal.ex", "lib/httpoison_mock.ex", "mix.exs", "mix.lock", "README.md"],
       name: "gcal",
-      licenses: ["GNU GPL v2.0"],
+      licenses: ["GPL-2.0-or-later"],
       maintainers: ["dwyl"],
       links: %{"GitHub" => "https://github.com/dwyl/gcal"}
     ]

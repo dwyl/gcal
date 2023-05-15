@@ -131,10 +131,74 @@ defmodule Gcal do
     }
 
     {:ok, event_list} =
-      httpoison().get("#{@baseurl}/calendars/#{primary_cal.id}/events", headers(access_token), params: params)
+      httpoison().get("#{@baseurl}/calendars/#{primary_cal.id}/events", headers(access_token),
+        params: params
+      )
       |> parse_body_response()
 
     {primary_cal, event_list}
+  end
+
+  @doc """
+  `create_event/3` creates a new event in the desired calendar
+
+  Arguments:
+
+  `acces_token`: the valid `Google` Auth Session token.
+  `event_details`: the details of the event to be created
+  `cal_name`(optional): the calendar to create the event in
+  """
+  # Create new event to the primary calendar.
+  def create_event(access_token, %{
+         "title" => title,
+         "date" => date,
+         "start" => start,
+         "stop" => stop,
+         "all_day" => all_day,
+         "hoursFromUTC" => hoursFromUTC
+       }, cal_name \\ "primary") do
+
+    # Get primary calendar
+    {:ok, primary_cal} = get_calendar_details(access_token, cal_name)
+
+    # Setting `start` and `stop` according to the `all-day` boolean,
+    # If `all-day` is set to true, we should return the date instead of the datetime,
+    # as per https://developers.google.com/calendar/api/v3/reference/events/insert.
+    start =
+      case all_day do
+        true ->
+          %{date: date}
+
+        false ->
+          %{
+            dateTime:
+              Timex.parse!("#{date} #{start} #{hoursFromUTC}", "{YYYY}-{0M}-{D} {h24}:{m} {Z}")
+              |> Timex.format!("{RFC3339}")
+          }
+      end
+
+    stop =
+      case all_day do
+        true ->
+          %{date: date}
+
+        false ->
+          %{
+            dateTime:
+              Timex.parse!("#{date} #{stop} #{hoursFromUTC}", "{YYYY}-{0M}-{D} {h24}:{m} {Z}")
+              |> Timex.format!("{RFC3339}")
+          }
+      end
+
+    # Post new event
+    body = Jason.encode!(%{summary: title, start: start, end: stop})
+
+    httpoison().post(
+      "#{@baseurl}/calendars/#{primary_cal.id}/events",
+      body,
+      headers(access_token)
+    )
+    |> parse_body_response()
   end
 
   # Parse JSON body response
@@ -145,7 +209,7 @@ defmodule Gcal do
       {:error, :no_body}
     else
       {:ok, str_key_map} = Jason.decode(body)
-      # https://stackoverflow.com/questions/31990134
+      # github.com/dwyl/useful#atomize_map_keys1
       {:ok, Useful.atomize_map_keys(str_key_map)}
     end
   end
