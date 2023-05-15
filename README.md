@@ -67,7 +67,7 @@ Add `gcal` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:gcal, "~> 1.0.1"}
+    {:gcal, "~> 1.0.2"}
   ]
 end
 ```

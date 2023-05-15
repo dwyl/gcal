@@ -30,6 +30,7 @@ defmodule Gcal do
 
   Sample response:
 
+  ```elixir
   {:ok, %{
     etag: "\"p320ebocgmjpfs0g\"",
     items: [
@@ -79,6 +80,7 @@ defmodule Gcal do
     kind: "calendar#calendarList",
     nextSyncToken: "CIDl4ZC08v4CEg9uZWxzb25AZHd5bC5jb20="
   }}
+  ```
   """
   def get_calendar_list(access_token) do
     httpoison().get("#{@baseurl}/users/me/calendarList", headers(access_token))
@@ -118,10 +120,102 @@ defmodule Gcal do
   `access_token`: the valid `Google` Auth Session token
   `datetime`: the date and time of the day to fetch the events.
   `calendar`: (optional) the string name of the calendar; defaults to "primary"
+
+  Sample response:
+
+  ```elixir
+  %{
+  accessRole: "owner",
+  defaultReminders: [%{method: "popup", minutes: 10}],
+  etag: "\"p32odpveognrvs0g\"",
+  items: [
+    %{
+      attendees: [
+        %{email: "nelson@gmail.com", responseStatus: "accepted", self: true},
+        %{email: "ines@gmail.com", organizer: true, responseStatus: "accepted"},
+        %{email: "simon@gmail.com", responseStatus: "accepted"},
+        %{email: "busy@gmail.com", responseStatus: "declined"}
+      ],
+      created: "2019-11-10T17:39:38.000Z",
+      creator: %{email: "ines@gmail.com"},
+      description: "Daily Standup for @dwyl team",
+      end: %{dateTime: "2023-05-15T10:00:00+01:00", timeZone: "Europe/London"},
+      etag: "\"3359131283178000\"",
+      eventType: "default",
+      htmlLink: "https://www.google.com/calendar/event?eid=a21pMWVicWpqYzYy",
+      iCalUID: "kmi1ebqjjc62s2hlukjj706unq_R20230324T093000@google.com",
+      id: "kmi1ebqjjc62s2hlukjj706unq_20230515T083000Z",
+      kind: "calendar#event",
+      location: "https://zoom.us/j/33713371",
+      organizer: %{email: "ines@gmail.com"},
+      originalStartTime: %{
+        dateTime: "2023-05-15T09:30:00+01:00",
+        timeZone: "Europe/London"
+      },
+      recurringEventId: "kmi1ebqjjc62s2hlukjj706unq_R20230324T093000",
+      reminders: %{useDefault: true},
+      sequence: 2,
+      start: %{dateTime: "2023-05-15T09:30:00+01:00", timeZone: "Europe/London"},
+      status: "confirmed",
+      summary: "Daily Standup",
+      updated: "2023-03-23T10:00:41.589Z"
+    },
+    %{
+      attendees: [
+        %{email: "nelson@gmail.com", responseStatus: "accepted", self: true},
+        %{
+          email: "ines@gmail.com",
+          organizer: true,
+          responseStatus: "accepted"
+        }
+      ],
+      created: "2023-04-28T08:21:26.000Z",
+      creator: %{email: "ines@gmail.com"},
+      end: %{dateTime: "2023-05-15T17:00:00+01:00", timeZone: "Europe/London"},
+      etag: "\"3367047572704000\"",
+      eventType: "default",
+      htmlLink: "https://www.google.com/calendar/event?eid=cnNodDJvMnRmcDNyMjN",
+      iCalUID: "rsht2o2tfp3r23kfqfc4pip@google.com",
+      id: "rsht2o2tfp3r23kfqfc4pip",
+      kind: "calendar#event",
+      organizer: %{email: "ines@gmail.com"},
+      reminders: %{useDefault: true},
+      sequence: 1,
+      start: %{dateTime: "2023-05-15T09:00:00+01:00", timeZone: "Europe/London"},
+      status: "confirmed",
+      summary: "House Work",
+      updated: "2023-05-08T05:29:46.352Z"
+    },
+    %{
+      created: "2023-05-15T09:48:24.000Z",
+      creator: %{email: "nelson@dwyl.com", self: true},
+      end: %{dateTime: "2023-05-15T15:00:00+01:00", timeZone: "Europe/London"},
+      etag: "\"3368288209788000\"",
+      eventType: "default",
+      htmlLink: "https://www.google.com/calendar/event?eid=OHQ1dHNyaHM0cDdpZG",
+      iCalUID: "8t5tsrhs4p7idmuj5ap8457ppc@google.com",
+      id: "8t5tsrhs4p7idmuj5ap8457ppc",
+      kind: "calendar#event",
+      organizer: %{email: "nelson@dwyl.com", self: true},
+      reminders: %{useDefault: true},
+      sequence: 0,
+      start: %{dateTime: "2023-05-15T14:00:00+01:00", timeZone: "Europe/London"},
+      status: "confirmed",
+      summary: "New Event using Gcal",
+      updated: "2023-05-15T09:48:24.894Z"
+    }
+  ],
+  kind: "calendar#events",
+  nextSyncToken: "CLDc_diF9_4CELDc_diF9_4CGAUgluyY_AE=",
+  summary: "nelson@gmail.com",
+  timeZone: "Europe/London",
+  updated: "2023-05-15T09:48:24.894Z"
+  }
+  ```
   """
   def get_event_list(access_token, datetime, cal_name \\ "primary") do
     # Get primary calendar
-    {:ok, primary_cal} = get_calendar_details(access_token, cal_name)
+    {:ok, cal} = get_calendar_details(access_token, cal_name)
 
     # Get events of primary calendar
     params = %{
@@ -131,12 +225,12 @@ defmodule Gcal do
     }
 
     {:ok, event_list} =
-      httpoison().get("#{@baseurl}/calendars/#{primary_cal.id}/events", headers(access_token),
+      httpoison().get("#{@baseurl}/calendars/#{cal.id}/events", headers(access_token),
         params: params
       )
       |> parse_body_response()
 
-    {primary_cal, event_list}
+    {:ok, event_list}
   end
 
   @doc """
@@ -149,15 +243,18 @@ defmodule Gcal do
   `cal_name`(optional): the calendar to create the event in
   """
   # Create new event to the primary calendar.
-  def create_event(access_token, %{
-         "title" => title,
-         "date" => date,
-         "start" => start,
-         "stop" => stop,
-         "all_day" => all_day,
-         "hoursFromUTC" => hoursFromUTC
-       }, cal_name \\ "primary") do
-
+  def create_event(
+        access_token,
+        %{
+          "title" => title,
+          "date" => date,
+          "start" => start,
+          "stop" => stop,
+          "all_day" => all_day,
+          "hoursFromUTC" => hoursFromUTC
+        },
+        cal_name \\ "primary"
+      ) do
     # Get primary calendar
     {:ok, primary_cal} = get_calendar_details(access_token, cal_name)
 
@@ -200,6 +297,8 @@ defmodule Gcal do
     )
     |> parse_body_response()
   end
+
+  # TODO: split the `all_day/2` function out from `create_event/3` ...
 
   # Parse JSON body response
   defp parse_body_response({:ok, response}) do

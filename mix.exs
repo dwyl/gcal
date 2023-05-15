@@ -18,7 +18,7 @@ defmodule Gcal.MixProject do
       ],
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      version: "1.0.1"
+      version: "1.0.2"
     ]
   end
 

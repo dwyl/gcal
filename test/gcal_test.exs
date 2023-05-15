@@ -15,8 +15,20 @@ defmodule GcalTest do
     assert cal_detail.id == "nelson@gmail.com-TEST"
   end
 
+  test "get_event_list/3 gets the event list for the specified calendar" do
+    access_token = System.get_env("TOKEN")
+    timezone = "Etc/UTC+01:00"
+    datetime = Timex.now(timezone)
+    {:ok, event_list} = Gcal.get_event_list(access_token, datetime, "primary")
+    # dbg(event_list)
+    first_event = List.first(event_list.items)
+    assert first_event.summary == "First Event"
+    # assert cal_detail.id == "nelson@gmail.com-TEST"
+  end
+
   test "create_event/2 creates an event in the desired calendar" do
     access_token = System.get_env("TOKEN")
+
     event_detail = %{
       "all_day" => false,
       "date" => "2023-05-15",
@@ -25,6 +37,7 @@ defmodule GcalTest do
       "stop" => "18:00",
       "title" => "My Awesome Event"
     }
+
     {:ok, event} = Gcal.create_event(access_token, event_detail, "primary")
     # dbg(event)
     assert event.summary == Map.get(event_detail, "title")

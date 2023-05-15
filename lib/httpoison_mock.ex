@@ -155,29 +155,32 @@ defmodule Gcal.HTTPoisonMock do
   post/2 for create_event/3 returns valid event data
   """
   def post(url, _body, _headers) do
-    data = cond do
-      String.contains?(url, "/events") ->
-        %{
-          created: "2023-05-15T09:31:18.000Z",
-          creator: %{email: "nelson@gmail.com", self: true},
-          end: %{dateTime: "2023-05-15T18:00:00+01:00", timeZone: "Europe/London"},
-          etag: "\"3368286156450000\"",
-          eventType: "default",
-          htmlLink: "https://www.google.com/calendar/event?eid=ODI5YXRxM2k1bmdobGg3ZjM3c2FzODZuaTAgbmVsc29uQGR3eWwuY29t",
-          iCalUID: "829atq3i5nghlh7f37sas86ni0@google.com",
-          id: "829atq3i5nghlh7f37sas86ni0",
-          kind: "calendar#event",
-          organizer: %{email: "nelson@gmail.com", self: true},
-          reminders: %{useDefault: true},
-          sequence: 0,
-          start: %{dateTime: "2023-05-15T16:00:00+01:00", timeZone: "Europe/London"},
-          status: "confirmed",
-          summary: "My Awesome Event",
-          updated: "2023-05-15T09:31:18.225Z"
-        }
-      true ->
-        %{}
-    end
+    data =
+      cond do
+        String.contains?(url, "/events") ->
+          %{
+            created: "2023-05-15T09:31:18.000Z",
+            creator: %{email: "nelson@gmail.com", self: true},
+            end: %{dateTime: "2023-05-15T18:00:00+01:00", timeZone: "Europe/London"},
+            etag: "\"3368286156450000\"",
+            eventType: "default",
+            htmlLink:
+              "https://www.google.com/calendar/event?eid=ODI5YXRxM2k1bmdobGg3ZjM3c2FzODZuaTAgbmVsc29uQGR3eWwuY29t",
+            iCalUID: "829atq3i5nghlh7f37sas86ni0@google.com",
+            id: "829atq3i5nghlh7f37sas86ni0",
+            kind: "calendar#event",
+            organizer: %{email: "nelson@gmail.com", self: true},
+            reminders: %{useDefault: true},
+            sequence: 0,
+            start: %{dateTime: "2023-05-15T16:00:00+01:00", timeZone: "Europe/London"},
+            status: "confirmed",
+            summary: "My Awesome Event",
+            updated: "2023-05-15T09:31:18.225Z"
+          }
+
+        true ->
+          %{}
+      end
 
     {:ok, %{body: Jason.encode!(data)}}
   end
