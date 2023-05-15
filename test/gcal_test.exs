@@ -31,15 +31,15 @@ defmodule GcalTest do
 
     event_detail = %{
       "all_day" => false,
-      "date" => "2023-05-15",
-      "hoursFromUTC" => "+0100",
-      "start" => "16:00",
-      "stop" => "18:00",
-      "title" => "My Awesome Event"
+      date: "2023-05-15",
+      hoursFromUTC: "+0100",
+      start: "16:00",
+      stop: "18:00",
+      title: "My Awesome Event"
     }
 
     {:ok, event} = Gcal.create_event(access_token, event_detail, "primary")
     # dbg(event)
-    assert event.summary == Map.get(event_detail, "title")
+    assert event.summary == event_detail.title
   end
 end

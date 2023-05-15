@@ -72,6 +72,17 @@ def deps do
 end
 ```
 
+## Configuration
+
+If you want to run tests with mocks 
+in your project that uses `Gcal`,
+add the following lines to your `config/text.exs` file:
+
+```elixir
+config :gcal,
+  httpoison_mock: true
+```
+
 ## Usage
 
 ### Google Auth Session `access_token`
