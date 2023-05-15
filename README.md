@@ -97,8 +97,9 @@ to easily authenticate with their `Google` Account.
 
 ### Functions
 
-
-
+Please see: 
+[hexdocs.pm/gcal/Gcal.html**#functions**](https://hexdocs.pm/gcal/Gcal.html#functions)
+for the latest function reference. 
 
 # Docs
 

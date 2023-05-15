@@ -45,6 +45,7 @@ defmodule GcalTest do
 
   test "create_event/3 all_day=true" do
     access_token = System.get_env("TOKEN")
+
     event_detail = %{
       all_day: true,
       date: "2023-05-15",

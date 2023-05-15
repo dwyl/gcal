@@ -5,7 +5,7 @@ config :gcal,
   # client_secret: "MHxv6-RGF5nheXnxh1b0LNDq",
   httpoison_mock: true
 
-  # httpoison_mock: false
+# httpoison_mock: false
 
 # System.put_env(
 #   "GOOGLE_CLIENT_ID",
