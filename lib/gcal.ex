@@ -2,7 +2,8 @@ defmodule Gcal do
   import Gcal.HTTPoison
 
   @moduledoc """
-  `Gcal` helps you interact with your `Google` Calendar via the API.
+  `Gcal` lets you interact with your `Google` Calendar via the API.
+  View your calendar events, modify event details and create new events.
   """
 
   @baseurl "https://www.googleapis.com/calendar/v3"
@@ -97,7 +98,7 @@ defmodule Gcal do
   `calendar`: (optional) the string name of the calendar; defaults to "primary"
 
   Sample response:
-
+  ```elixir
   {:ok, %{
     conferenceProperties: %{"allowedConferenceSolutionTypes" => ["hangoutsMeet"]},
     etag: "\"oftesUJ77GfcrwCPCmctnI90Qzs\"",
@@ -106,7 +107,7 @@ defmodule Gcal do
     summary: "nelson@gmail.com",
     timeZone: "Europe/London"
   }}
-
+  ```
   """
   def get_calendar_details(access_token, cal_name \\ "primary") do
     httpoison().get("#{@baseurl}/calendars/#{cal_name}", headers(access_token))
@@ -242,6 +243,8 @@ defmodule Gcal do
   `event_details`: the details of the event to be created
   `cal_name`(optional): the calendar to create the event in
 
+  Sample `event_details`:
+  ```elixir
   %{
     "title" => title,
     "date" => date,
@@ -250,41 +253,19 @@ defmodule Gcal do
     "all_day" => all_day,
     "hoursFromUTC" => hoursFromUTC
   }
+  ```
   """
   # Create new event to the primary calendar.
-  def create_event(access_token, event, cal_name \\ "primary") do
-    e = Useful.atomize_map_keys(event)
+  def create_event(access_token, event_details, cal_name \\ "primary") do
+    e = Useful.atomize_map_keys(event_details)
     # Get primary calendar
     {:ok, primary_cal} = get_calendar_details(access_token, cal_name)
 
     # Setting `start` and `stop` according to the `all-day` boolean,
     # If `all-day` is set to true, we should return the date instead of the datetime,
     # as per https://developers.google.com/calendar/api/v3/reference/events/insert.
-    start =
-      case e.all_day do
-        true ->
-          %{date: e.date}
-
-        false ->
-          %{
-            dateTime:
-              Timex.parse!("#{e.date} #{e.start} #{e.hoursFromUTC}", "{YYYY}-{0M}-{D} {h24}:{m} {Z}")
-              |> Timex.format!("{RFC3339}")
-          }
-      end
-
-    stop =
-      case e.all_day do
-        true ->
-          %{date: e.date}
-
-        false ->
-          %{
-            dateTime:
-              Timex.parse!("#{e.date} #{e.stop} #{e.hoursFromUTC}", "{YYYY}-{0M}-{D} {h24}:{m} {Z}")
-              |> Timex.format!("{RFC3339}")
-          }
-      end
+    start = all_day_or_datetime(e, e.start)
+    stop = all_day_or_datetime(e, e.stop)
 
     # Post new event
     body = Jason.encode!(%{summary: e.title, start: start, end: stop})
@@ -297,7 +278,24 @@ defmodule Gcal do
     |> parse_body_response()
   end
 
-  # TODO: split the `all_day/2` function out from `create_event/3` ...
+  @doc """
+  `all_day_or_datetime/2` is a helper function
+  that formats the date (in the case of an all_day event)
+  or datetime in the format that the Google Calendar API accepts.
+  """
+  def all_day_or_datetime(e, time) do
+    case e.all_day do
+      true ->
+        %{date: e.date}
+
+      false ->
+        %{
+          dateTime:
+            Timex.parse!("#{e.date} #{time} #{e.hoursFromUTC}", "{YYYY}-{0M}-{D} {h24}:{m} {Z}")
+            |> Timex.format!("{RFC3339}")
+        }
+    end
+  end
 
   # Parse JSON body response
   defp parse_body_response({:ok, response}) do
