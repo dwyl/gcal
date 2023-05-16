@@ -283,15 +283,18 @@ defmodule Gcal do
   that formats the date (in the case of an all_day event)
   or datetime in the format that the Google Calendar API accepts.
   """
-  def all_day_or_datetime(e, time) do
-    case e.all_day do
+  def all_day_or_datetime(event, time) do
+    case event.all_day do
       true ->
-        %{date: e.date}
+        %{date: event.date}
 
       false ->
         %{
           dateTime:
-            Timex.parse!("#{e.date} #{time} #{e.hoursFromUTC}", "{YYYY}-{0M}-{D} {h24}:{m} {Z}")
+            Timex.parse!(
+              "#{event.date} #{time} #{event.hoursFromUTC}",
+              "{YYYY}-{0M}-{D} {h24}:{m} {Z}"
+            )
             |> Timex.format!("{RFC3339}")
         }
     end

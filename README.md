@@ -47,7 +47,7 @@ Anyone `else` that needs to interact with `Google Calendar`
 from their `Elixir` / `Phoenix` App(s)
 is very welcome to use it.
 
-If you like what you see, please star the repo. ⭐ 🙏
+If you like what you see, please star the repo. ⭐ 🙏 <br />
 If you have any questions or suggestions,
 please 
 [open an issue](https://github.com/dwyl/gcal/issues/new)
@@ -98,7 +98,7 @@ to easily authenticate with their `Google` Account.
 ### Functions
 
 Please see: 
-[hexdocs.pm/gcal/Gcal.html**#functions**](https://hexdocs.pm/gcal/Gcal.html#functions)
+[hexdocs.pm/gcal/Gcal.html#functions](https://hexdocs.pm/gcal/Gcal.html#functions)
 for the latest function reference. 
 
 # Docs
