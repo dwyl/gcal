@@ -50,7 +50,7 @@ defmodule Gcal.MixProject do
       {:timex, "~> 3.0"},
 
       # Useful functions: github.com/dwyl/useful
-      {:useful, "~> 1.11.1"},
+      {:useful, "~> 1.12.0"},
 
       # Create docs on localhost by running "mix docs"
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
