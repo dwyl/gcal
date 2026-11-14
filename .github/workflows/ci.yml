@@ -8,30 +8,42 @@ on:
 
 jobs:
   build:
-    name: Build and test
+    name: ✨ Build and Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        ports: ["5432:5432"]
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
+      - uses: actions/checkout@v7  # github.com/actions/checkout
+      - name: 💧 Set up Elixir
+        uses: erlef/setup-beam@v1  # github.com/erlef/setup-beam
         with:
-          elixir-version: "1.14.2" # Define the elixir version [required]
-          otp-version: "25.1.2" # Define the OTP version [required]
-      - name: Restore dependencies cache
-        uses: actions/cache@v4
+          elixir-version: '1.19.x' # Define the elixir version [required]
+          otp-version: '28.1.x' # Define the OTP version [required]
+      - name: 📂 Restore Dependencies Cache
+        uses: actions/cache@v6     # github.com/actions/cache
         with:
           path: deps
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
-      - name: Install dependencies
+      - name: ⬇️ Install dependencies
         run: mix deps.get
       - name: Compile
         run: mix compile --warnings-as-errors
-      - name: Run Tests
+      - name: ✅ Run Tests
         run: mix coveralls.json
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MIX_ENV: test
           ENCRYPTION_KEYS: "nMdayQpR0aoasLaq1g94FLba+A+wB44JLko47sVQXMg=,L+ZVX8iheoqgqb22mUpATmMDsvVGtafoAeb0KN5uWf0="
           SECRET_KEY_BASE: "GLH2S6EU0eZt+GSEmb5wEtonWO847hsQ9fck0APr4VgXEdp9EKfni2WO61z0DMOF"
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+      - name: 💯 Upload coverage to Codecov
+        uses: codecov/codecov-action@v7 # github.com/codecov/codecov-action

@@ -47,7 +47,7 @@ defmodule Gcal.MixProject do
       {:httpoison, "~> 2.0"},
 
       # Datetime transformation: github.com/bitwalker/timex
-      {:timex, "~> 3.0"},
+      {:timex, "~> 4.0"},
 
       # Useful functions: github.com/dwyl/useful
       {:useful, "~> 1.15.0"},
