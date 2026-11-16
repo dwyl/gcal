@@ -44,7 +44,7 @@ defmodule Gcal.MixProject do
   defp deps do
     [
       # HTTP request lib: github.com/edgurgel/httpoison
-      {:httpoison, "~> 2.0"},
+      {:httpoison, "~> 3.0"},
 
       # Datetime transformation: github.com/bitwalker/timex
       {:timex, "~> 4.0"},
